@@ -1,0 +1,38 @@
+<template id="user-add">
+        <el-form :model="form">
+            <el-form-item label="用户名" :label-width="formLabelWidth">
+                <el-input v-model="form.name" auto-complete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="类型" :label-width="formLabelWidth">
+                <el-select v-model="form.type" placeholder="请选择用户类型">
+                    <el-option label="超级管理员" value="1"></el-option>
+                    <el-option label="普通用户" value="2"></el-option>
+                </el-select>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogFormVisible = false">取 消</el-button>
+            <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+        </div>
+</template>
+
+<script>
+Vue.component('user-add', {
+    template: '#user-add',
+    data (){
+        return {
+            form: {
+                name: '',
+                region: '',
+                date1: '',
+                date2: '',
+                delivery: false,
+                type: [],
+                resource: '',
+                desc: ''
+            },
+            formLabelWidth: '120px'
+        }
+    }
+})
+</script>

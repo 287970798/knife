@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1 user-scalable=0">
+    <title>{block name="title"}{$title}{/block}</title>
+
+    {block name="css"}
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    {include file="common/common_css"}
+    {/block}
+
+    {block name="style"}{/block}
+</head>
+<body>
+
+<div id="app">
+    <el-container>
+        <el-header>
+            {block name="header"}<myheader/>{/block}
+        </el-header>
+        <el-main>{block name="main"}main{/block}</el-main>
+    </el-container>
+</div>
+
+{// js}
+{block name="js"}
+<script src="__JS__/vue.min@2.6.1.js"></script>
+<!-- 引入组件库 -->
+<script src="__JS__/element-ui@2.8.2@index.js"></script>
+{/block}
+
+{// component}
+{block name="component"}{include file="common/header"}{/block}
+
+{// script}
+{block name="script"}{/block}
+</body>
+</html>

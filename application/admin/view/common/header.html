@@ -1,0 +1,47 @@
+<template id="header">
+<el-header>
+    <el-row :gutter="20">
+        <el-col :span="3" class="logo">{{systemName}}</el-col>
+        <el-col :span="17" :offset="2">
+            {include file="common/menu"}
+        </el-col>
+        <el-col :span="2">
+            <el-menu
+                    :default-active="activeIndex"
+                    class="el-menu-demo"
+                    mode="horizontal"
+                    @select="handleSelect"
+                    background-color="#545c64"
+                    text-color="#fff"
+                    active-text-color="#ffd04b">
+                <el-submenu index="10">
+                    <template slot="title">个人中心</template>
+                    <el-menu-item index="10-1">个人资料</el-menu-item>
+                    <el-menu-item index="10-2">安全设置</el-menu-item>
+                    <el-menu-item index="10-3">退出</el-menu-item>
+                </el-submenu>
+            </el-menu>
+        </el-col>
+    </el-row>
+
+</el-header>
+</template>
+<script>
+    Vue.component('myheader', {
+        template: '#header',
+        data() {
+            return {
+                activeIndex: '{$Think.server.path_info}',
+                systemName: 'AGENT CRM'
+            }
+        },
+        methods: {
+            handleSelect(key, keyPath) {
+                console.log(key, keyPath);
+                if (isNaN(key)) {
+                    location.href=key;
+                }
+            }
+        }
+    })
+</script>

@@ -1,11 +1,15 @@
 {extend name="common/base"}
+
 {block name="main"}
+<el-dialog title="添加用户" :visible.sync="dialogFormVisible">
+    <user-add/>
+</el-dialog>
 
 <el-row style="padding: 20px 0 30px;">
     <el-col>
         <el-card shadow="never">
-            <span>代理商管理</span>
-            <el-button style="float: right; padding: 3px 0" type="text">新增</el-button>
+            <span>{$title}</span>
+            <el-button style="float: right; padding: 3px 0" type="text"  @click="dialogFormVisible = true">新增</el-button>
         </el-card>
     </el-col>
 </el-row>
@@ -15,18 +19,23 @@
                 :data="tableData"
                 style="width: 100%">
             <el-table-column
-                    prop="date"
-                    label="日期"
-                    width="180">
-            </el-table-column>
-            <el-table-column
                     prop="name"
                     label="姓名"
                     width="180">
             </el-table-column>
             <el-table-column
-                    prop="address"
-                    label="地址">
+                    prop="username"
+                    label="用户名"
+                    width="180">
+            </el-table-column>
+            <el-table-column
+                    prop="phone"
+                    label="手机">
+            </el-table-column>
+            <el-table-column
+                    prop="create_time"
+                    label="日期"
+                    width="180">
             </el-table-column>
 
             <el-table-column
@@ -48,5 +57,26 @@
             :total="1000">
     </el-pagination>
 </el-row>
+{/block}
 
+{block name="component"}
+{__block__}
+{include file="user/components/add"}
+{/block}
+
+{block name="script"}
+{__block__}
+<script>
+    var vue = new Vue({
+        el: '#app',
+        data: {
+            dialogFormVisible: false,
+            msg: 'KNIFE CRM',
+            tableData: JSON.parse('{$all|raw}')
+        },
+        methods: {
+
+        }
+    });
+</script>
 {/block}
