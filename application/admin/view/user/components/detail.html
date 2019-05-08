@@ -1,0 +1,51 @@
+<template id="user-detail">
+    <table v-loading="loading">
+        <tr>
+            <td>姓名</td>
+            <td>{{detail.name}}</td>
+        </tr>
+        <tr>
+            <td>用户名</td>
+            <td>{{detail.username}}</td>
+        </tr>
+        <tr>
+            <td>手机</td>
+            <td>{{detail.phone}}</td>
+        </tr>
+        <tr>
+            <td>备注</td>
+            <td>{{detail.note}}</td>
+        </tr>
+    </table>
+</template>
+<script>
+    Vue.component('user-detail', {
+        template: '#user-detail',
+        props: ['id'],
+        data(){
+            return {
+                loading: false,
+                detail: {
+                    name: 'tom',
+                    username: 'jack'
+                }
+            }
+        },
+        methods: {
+            getData: function (id) {
+                this.loading=true;
+                var vm = this;
+                axios.get('/admin/user/'+id)
+                    .then(function (res) {
+                        console.log(res);
+                        vm.detail = res.data.data;
+                        vm.loading=false;
+                    })
+                    .catch(function (error) {
+                        console.log(error)
+                        vm.loading=false;
+                    })
+            }
+        }
+    })
+</script>

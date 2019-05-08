@@ -1,9 +1,9 @@
-<template id="user-add">
+<template id="user-edit">
         <el-form
                 :label-position="labelPosition"
                 :model="form"
                 :rules="rules"
-                ref="addForm">
+                ref="editForm">
             <el-form-item label="姓名" :label-width="formLabelWidth" prop="name">
                 <el-input v-model="form.name" auto-complete="off"></el-input>
             </el-form-item>
@@ -11,7 +11,7 @@
                 <el-input v-model="form.username" auto-complete="off"></el-input>
             </el-form-item>
             <el-form-item label="密码" :label-width="formLabelWidth" prop="password">
-                <el-input type="password" v-model="form.password" auto-complete="off"></el-input>
+                <el-input placeholder="不修改请留空" type="password" v-model="form.password" auto-complete="off"></el-input>
             </el-form-item>
             <el-form-item label="手机" :label-width="formLabelWidth" prop="phone">
                 <el-input v-model="form.phone" auto-complete="off"></el-input>
@@ -29,8 +29,8 @@
 </template>
 
 <script>
-Vue.component('user-add', {
-    template: '#user-add',
+Vue.component('user-edit', {
+    template: '#user-edit',
     data (){
         return {
             labelPosition: 'right',
@@ -48,9 +48,6 @@ Vue.component('user-add', {
               ],
               username: [
                   {required: true, message: '请输入用户名', trigger: 'blur'}
-              ],
-              password: [
-                  {required: true, message: '请输入密码', trigger: 'blur'}
               ]
             },
             formLabelWidth: '80px'
@@ -60,7 +57,7 @@ Vue.component('user-add', {
         submit: function () {
             var vm = this;
             axios.post(
-                '/admin/user/add',
+                '/admin/user/edit/'+this.form.id,
                 this.form
             ).then(function (res) {
                 console.log(res);
@@ -70,7 +67,7 @@ Vue.component('user-add', {
                     duration: '500',
                     onClose: function () {
                         vm.$emit('status', res.data);
-                        vm.$refs.addForm.resetFields();
+                        vm.$refs.editForm.resetFields();
                     }
                 })
             }).catch(function (error) {
@@ -78,6 +75,24 @@ Vue.component('user-add', {
                 vm.$message.error('出错了，请稍候再试');
                 vm.$emit('status', false);
             })
+        },
+        getData: function (id) {
+            var vm = this;
+            axios.get('/admin/user/'+id)
+                .then(function (res) {
+                    res.data.data.password='';
+                    vm.form=res.data.data;
+
+                    if (vm.form.type) {
+                        // 下拉菜单的值转为字符串
+                        vm.form.type = vm.form.type + '';
+                    } else {
+                        vm.form.type = '';
+                    }
+                })
+                .catch(function (error) {
+                    vm.$alert(error);
+                })
         }
     }
 })

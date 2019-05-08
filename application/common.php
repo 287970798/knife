@@ -10,3 +10,13 @@
 // +----------------------------------------------------------------------
 
 // 应用公共文件
+
+
+function formatApi($code = 0, $message = '成功', $data = []) {
+    $format = [
+        'code' => $code,
+        'message' => $message,
+        'data' => $data
+    ];
+    return $format;
+}

@@ -1,8 +1,34 @@
 {extend name="common/base"}
 
 {block name="main"}
-<el-dialog title="添加用户" :visible.sync="dialogFormVisible">
-    <user-add/>
+<el-dialog
+        title="添加用户"
+        :visible.sync="dialogFormVisible"
+        :close-on-click-modal="false"
+        :fullscreen="true"
+>
+    <div slot="footer" class="dialog-footer"  v-loading="loading">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="onSubmit">确 定</el-button>
+    </div>
+    <user-add ref="userAdd" @status="getStatus"/>
+</el-dialog>
+
+<el-dialog
+        title="用户详情"
+        :visible.sync="showDetail">
+    <user-detail ref="userDetail"/>
+</el-dialog>
+
+<el-dialog
+        title="编辑用户"
+        :visible.sync="showEdit">
+
+    <div slot="footer" class="dialog-footer"  v-loading="editLoading">
+        <el-button @click="showEdit = false">取 消</el-button>
+        <el-button type="primary" @click="onEditSubmit">确 定</el-button>
+    </div>
+    <user-edit ref="userEdit" @status="getEditStatus"/>
 </el-dialog>
 
 <el-row style="padding: 20px 0 30px;">
@@ -17,7 +43,17 @@
     <template>
         <el-table
                 :data="tableData"
+                :stripe="true"
+                :border="true"
                 style="width: 100%">
+            <el-table-column
+                    type="selection"
+                    width="55">
+            </el-table-column>
+            <el-table-column
+                    type="index"
+                    width="55">
+            </el-table-column>
             <el-table-column
                     prop="name"
                     label="姓名"
@@ -44,7 +80,7 @@
                     width="100">
                 <template slot-scope="scope">
                     <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
-                    <el-button type="text" size="small">编辑</el-button>
+                    <el-button @click="handleEdit(scope.row)" type="text" size="small">编辑</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -59,23 +95,94 @@
 </el-row>
 {/block}
 
+{// 加载组件}
 {block name="component"}
 {__block__}
 {include file="user/components/add"}
+{include file="user/components/detail"}
+{include file="user/components/edit"}
 {/block}
 
+{// 实例化vue}
 {block name="script"}
 {__block__}
 <script>
-    var vue = new Vue({
+    new Vue({
         el: '#app',
         data: {
+            showDetail: false,
+            showEdit: false,
+            detailUserId: 0,
+            loading: false,
+            editLoading: false,
             dialogFormVisible: false,
             msg: 'KNIFE CRM',
             tableData: JSON.parse('{$all|raw}')
         },
         methods: {
+            onSubmit: function (e) {
+                var vm = this;
+                this.loading = true;
+                var userAdd = this.$refs.userAdd,
+                    addForm = userAdd.$refs.addForm;
 
+                addForm.validate(function (valid) {
+                    if (valid) {
+                        userAdd.submit();
+                    } else {
+                        vm.loading = false;
+                    }
+                });
+            },
+            onEditSubmit: function (e) {
+                var vm = this;
+                this.editloading = true;
+                var userEdit = this.$refs.userEdit,
+                    editForm = userEdit.$refs.editForm;
+
+                editForm.validate(function (valid) {
+                    if (valid) {
+                        userEdit.submit();
+                    } else {
+                        vm.editloading = false;
+                    }
+                });
+            },
+            getStatus: function (status) {
+                this.loading = false;
+                if (status) {
+                    this.dialogFormVisible = false;
+                    this.tableData.unshift(status.data);
+                    console.log(status.data)
+                }
+            },
+            getEditStatus: function (status) {
+                var vm = this;
+                this.loading = false;
+                if (status) {
+                    this.showEdit = false;
+                    axios.get('/admin/user/all')
+                        .then(function (res) {
+                            console.log(res.data.data)
+                            vm.tableData = res.data.data;
+                        })
+                    console.log(status.data)
+                }
+            },
+            handleClick: function (row) {
+                this.showDetail = true;
+                this.$nextTick(function () {
+                    this.$refs.userDetail.getData(row.id);
+                })
+                // console.log(this.$refs.userDetail)
+                // this.$refs.userDetail.getData(row.id);
+            },
+            handleEdit: function (row) {
+                this.showEdit = true;
+                this.$nextTick(function () {
+                    this.$refs.userEdit.getData(row.id);
+                })
+            }
         }
     });
 </script>

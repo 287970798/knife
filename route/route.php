@@ -15,6 +15,9 @@ Route::get('think', function () {
 
 Route::get('hello/:name', 'index/hello');
 
+Route::get('admin/user/:id', 'admin/user/detail');
+Route::get('admin/user/edit/:id', 'admin/user/edit');
+
 return [
 
 ];
